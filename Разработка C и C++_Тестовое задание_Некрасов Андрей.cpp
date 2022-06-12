@@ -3,7 +3,7 @@
     Implemented for GNU/Linux
     This program implements a simple static site generator, by recursively
     copying input directory to output directory, and
-    transforming every "*.gem" file to "*.html" in the process.
+    transforming every "*.gmi" file to "*.html" in the process.
 
     It's assumed, that the output directory does not exist and that we have
     rights to create it and write into it.
@@ -23,7 +23,7 @@
 
 namespace fs = std::filesystem;
 
-// Tags in ".gem" file
+// Tags in ".gmi" file
 enum TagType {
     PlainText,
     FirstHeader,
@@ -119,12 +119,12 @@ std::string processGemText(std::string text) {
 
 void rewriteGemFile(fs::path p) {
     /*
-        replaces "*.gem" file by path p with "*.html" and performs 
+        replaces "*.gmi" file by path p with "*.html" and performs 
         tag-processing
     */
     fs::path oldPath = p;
     p.replace_extension(".html");
-    // read text from ".gem" file
+    // read text from ".gmi" file
     std::ifstream inputFile(oldPath);
     if (!inputFile) {
         std::cerr << "couldn't read " << oldPath << "\n";
@@ -153,7 +153,7 @@ void copyRDir(std::string inPath, std::string outPath) {
     fs::copy(inPath, outPath, fs::copy_options::recursive);
     std::vector<fs::path> gemFiles;
     for (const auto &dirEntry : fs::recursive_directory_iterator(outPath)) {
-        if (dirEntry.path().extension() == ".gem") {
+        if (dirEntry.path().extension() == ".gmi") {
             gemFiles.push_back(dirEntry.path());
         }
     }
